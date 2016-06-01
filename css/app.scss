@@ -1,0 +1,23 @@
+@import "../node_modules/materialize-css/sass/materialize.scss";
+
+@font-face {
+    font-family: "Digital-7";
+    src: url("fonts/Digital-7/Digital-7.ttf") format("truetype");
+}
+
+#calcapp{
+
+}
+
+#calc-input{
+  font-size: 50px;
+  font-family: Digital-7;
+}
+
+.calc-extension-buttons__panel{
+  padding-bottom: 0;
+}
+
+.calc-digit-buttons__panel{
+  padding-top: 0;
+}
