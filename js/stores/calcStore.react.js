@@ -8,7 +8,8 @@ var CHANGE_EVENT = 'change';
 var _inputs = [];
 var _history = [];
 var _currentInput = '';
-var _currentOperation = null;
+var _currentOperation = '';
+var isRecentlyEvaluated = false;
 
 var buttonsConfig = [
   {
@@ -113,6 +114,15 @@ var buttonsConfig = [
   }
 ];
 
+var calculateValues = function () {
+  var query = _inputs.map(function (_input) { return _input.input; }).join('');
+  var result = (new Function('return ' + query))();
+  _currentInput = result + '';
+  _history.concat(_inputs);
+  _inputs = [];
+  isRecentlyEvaluated = true;
+};
+
 var CalcStore = assign({}, eventEmitter.prototype, {
   getButtonConfig: function () {
     return buttonsConfig;
@@ -130,8 +140,10 @@ var CalcStore = assign({}, eventEmitter.prototype, {
     return _inputs;
   },
 
-  addNewInput: function () {
-    _inputs.push(_currentInput);
+  addNewInput: function (input, type) {
+    if(input !== ''){
+      _inputs.push({type: type, input: input});
+    }
   },
 
   emitChange: function() {
@@ -153,16 +165,46 @@ var CalcStore = assign({}, eventEmitter.prototype, {
     });
   },
 
-  setOperation: function (operation) {
+  setCurrentOperation: function (operation) {
     _currentOperation = operation;
+  },
+
+  getCurrentOperation: function () {
+    return _currentOperation;
+  },
+
+  performOperation: function (operationButton) {
+    if(operationButton.name === constants.operations.EQUATE){
+      this.addNewInput(_currentOperation, constants.buttonTypes.OPERATOR);
+      this.setCurrentOperation('');
+      this.addNewInput(_currentInput, constants.buttonTypes.DIGIT);
+      this.setCurrentInput('');
+      calculateValues();
+    }else{
+      this.setCurrentOperation(operationButton.value);
+      this.addNewInput(_currentInput, constants.buttonTypes.DIGIT);
+      this.setCurrentInput('');
+    }
   }
 });
 
 dispatcher.register(function(action) {
   switch(action.actionType) {
     case constants.events.INSERT_NUMBER:
-      var input = CalcStore.getCurrentInput();
-      CalcStore.setCurrentInput(input + action.button.value);
+      if(!isRecentlyEvaluated){
+        var input = CalcStore.getCurrentInput();
+        var operation = CalcStore.getCurrentOperation();
+        // add current operation to list of inputs when next number is fed
+        if(input === '' && operation !== ''){
+          CalcStore.addNewInput(operation, constants.buttonTypes.OPERATOR);
+          CalcStore.setCurrentOperation('');
+        }
+
+        CalcStore.setCurrentInput(input + action.button.value);
+      }else{
+        CalcStore.setCurrentInput(action.button.value + '');
+        isRecentlyEvaluated = false;
+      }
       CalcStore.emitChange();
       break;
 
@@ -178,9 +220,7 @@ dispatcher.register(function(action) {
       break;
 
     case constants.events.DO_OPERATION:
-      CalcStore.setOperation(action.button.name);
-      CalcStore.addNewInput();
-      CalcStore.setCurrentInput('');
+      CalcStore.performOperation(action.button);
       CalcStore.emitChange();
       break;
 
