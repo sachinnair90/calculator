@@ -13,18 +13,18 @@ var isRecentlyEvaluated = false;
 
 var buttonsConfig = [
   {
-    name: 'One',
-    value: 1,
+    name: 'Seven',
+    value: 7,
     type: constants.buttonTypes.DIGIT
   },
   {
-    name: 'Two',
-    value: 2,
+    name: 'Eight',
+    value: 8,
     type: constants.buttonTypes.DIGIT
   },
   {
-    name: 'Three',
-    value: 3,
+    name: 'Nine',
+    value: 9,
     type: constants.buttonTypes.DIGIT
   },
   {
@@ -43,18 +43,18 @@ var buttonsConfig = [
     type: constants.buttonTypes.DIGIT
   },
   {
-    name: 'Seven',
-    value: 7,
+    name: 'One',
+    value: 1,
     type: constants.buttonTypes.DIGIT
   },
   {
-    name: 'Eight',
-    value: 8,
+    name: 'Two',
+    value: 2,
     type: constants.buttonTypes.DIGIT
   },
   {
-    name: 'Nine',
-    value: 9,
+    name: 'Three',
+    value: 3,
     type: constants.buttonTypes.DIGIT
   },
   {
@@ -119,7 +119,7 @@ var calculateValues = function () {
   var result = (new Function('return ' + query))();
   _currentInput = result + '';
   _history.concat(_inputs);
-  _inputs = [];
+  //_inputs.length = 0;
   isRecentlyEvaluated = true;
 };
 
@@ -202,6 +202,7 @@ dispatcher.register(function(action) {
 
         CalcStore.setCurrentInput(input + action.button.value);
       }else{
+        _inputs.length = 0;
         CalcStore.setCurrentInput(action.button.value + '');
         isRecentlyEvaluated = false;
       }

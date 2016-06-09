@@ -14,6 +14,17 @@
   font-family: Digital-7;
 }
 
+.calc-display__div{
+  font-size: 20px;
+  min-height: 2.14rem;
+}
+
+.calc-buttons__wrapper{
+  button{
+    width: 100%;
+  }
+}
+
 .calc-extension-buttons__panel{
   padding-bottom: 0;
 }

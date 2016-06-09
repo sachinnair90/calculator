@@ -18,17 +18,21 @@ var Display = React.createClass({
 
     _onChange: function (event) {
       this.setState({
-        value: Store.getCurrentInput()
+        value: Store.getCurrentInput(),
+        inputs: Store.getAllInputs().map(function(input){ return input.input; }).join(' ')
       });
     },
 
     render: function() {
       return (
-        <div className={'calc-display'}>
+        <div className={'calc-display col s12'}>
+          <div className={'calc-display__div row'}>
+            {this.state.inputs}
+          </div>
           <input
             type='text'
             id='calc-input'
-            className={'calc-display__input'}
+            className={'calc-display__input row'}
             placeholder='Feed in value..'
             autoFocus={true}
             onChange={this._onChange}

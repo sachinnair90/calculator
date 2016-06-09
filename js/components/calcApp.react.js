@@ -64,10 +64,10 @@ var app = React.createClass({
     }
 
     return (
-      <div className={'calc__main-wrapper section'}>
+      <div className={'calc__main-wrapper container'}>
         <Display className={'row'} />
         <div className={'calc-buttons__wrapper row'}>
-          <div className={'calc-buttons__panel--first col s9'}>
+          <div className={'calc-buttons__panel--first col s8 offset-s1'}>
             <div className={'calc-extension-buttons__panel section'}>
               <div className={'calc-extension-buttons__row row'}>
                 {extensions}
